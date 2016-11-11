@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hadoopNativeBenchConfiguration>
+    <commands>
+        <cmd>ls</cmd>
+        <enable>true</enable>
+        <name>echo_test</name>
+    </commands>
+    <commands>
+        <cmd>hadoop</cmd>
+        <enable>true</enable>
+        <name>hadoop_cmd</name>
+    </commands>
+    <commands>
+        <cmd>hadoop</cmd>
+        <enable>false</enable>
+        <name>hadoop_cmd</name>
+    </commands>
+</hadoopNativeBenchConfiguration>
