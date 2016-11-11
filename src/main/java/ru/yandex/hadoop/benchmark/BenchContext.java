@@ -11,7 +11,7 @@ import static ru.yandex.hadoop.benchmark.Utils.Utils.importConfiguration;
 /**
  * Created by zstan on 31.10.16.
  */
-public class BenchContext {
+public class BenchContext implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger(BenchContext.class);
     private static BenchContext INSTANCE;
 
@@ -19,6 +19,7 @@ public class BenchContext {
 
     private HadoopNativeBenchConfiguration nativeConfiguration;
     private BenchConfiguration benchConfiguration;
+    private StoreConnector storeConnector;
 
     public static BenchContext instance() {
         if (INSTANCE == null) {
@@ -29,7 +30,11 @@ public class BenchContext {
 
     private BenchContext() {
         benchConfiguration = new BenchConfiguration();
-        StoreConnector.testConnectionToStore(benchConfiguration);
+        if (StoreConnector.testConnectionToStore(benchConfiguration)) {
+            storeConnector = new StoreConnector(benchConfiguration);
+            if (!storeConnector.initStoreConnection(benchConfiguration))
+                logger.error("storeConnector init error");
+        }
         loadConfiguration();
     }
 
@@ -48,5 +53,11 @@ public class BenchContext {
 
     public BenchConfiguration getBenchConfiguration() {
         return benchConfiguration;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (storeConnector != null)
+            storeConnector.close();
     }
 }
