@@ -21,19 +21,21 @@ public class BenchContext implements AutoCloseable {
     private BenchConfiguration benchConfiguration;
     private StoreConnector storeConnector;
 
-    public static BenchContext instance() {
+    public static BenchContext instance() throws Exception {
         if (INSTANCE == null) {
             INSTANCE = new BenchContext();
         }
         return INSTANCE;
     }
 
-    private BenchContext() {
+    private BenchContext() throws Exception {
         benchConfiguration = new BenchConfiguration();
         if (StoreConnector.testConnectionToStore(benchConfiguration)) {
             storeConnector = new StoreConnector(benchConfiguration);
-            if (!storeConnector.initStoreConnection(benchConfiguration))
+            if (!storeConnector.initStoreConnection(benchConfiguration)) {
                 logger.error("storeConnector init error");
+                throw new Exception("storeConnector init error");
+            }
         }
         loadConfiguration();
     }
@@ -53,6 +55,10 @@ public class BenchContext implements AutoCloseable {
 
     public BenchConfiguration getBenchConfiguration() {
         return benchConfiguration;
+    }
+
+    public StoreConnector getStoreConnector() {
+        return storeConnector;
     }
 
     @Override

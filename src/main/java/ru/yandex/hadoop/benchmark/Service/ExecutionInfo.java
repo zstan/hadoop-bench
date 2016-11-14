@@ -13,6 +13,7 @@ public class ExecutionInfo {
     private final int returnCode;
     private final Command command;
     private long executionTime;
+    private long createTime;
 
     private ExecutionInfo() {
         this.execOutput = "";
@@ -47,5 +48,13 @@ public class ExecutionInfo {
 
     public Command getCommand() {
         return command;
+    }
+
+    public long getCreationTime() {
+        return createTime;
+    }
+
+    public void setCreationTime(long createTime) {
+        this.createTime = createTime;
     }
 }
