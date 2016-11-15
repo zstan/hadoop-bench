@@ -11,8 +11,8 @@
         <name>hadoop_cmd</name>
     </commands>
     <commands>
-        <cmd>hadoop</cmd>
-        <enable>false</enable>
-        <name>hadoop_cmd</name>
+        <cmd>hadoop jar /usr/lib/hadoop-0.20-mapreduce/hadoop-examples.jar teragen 100000000 /tmp/teraInput</cmd>
+        <enable>true</enable>
+        <name>hadoop_examples teragen 100000000</name>
     </commands>
 </hadoopNativeBenchConfiguration>

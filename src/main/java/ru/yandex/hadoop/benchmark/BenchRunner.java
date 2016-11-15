@@ -1,5 +1,9 @@
 package ru.yandex.hadoop.benchmark;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.Parameters;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.yandex.hadoop.benchmark.Configuration.Native.HadoopNativeBenchConfiguration;
@@ -20,7 +24,18 @@ public class BenchRunner {
 
     private static final Logger logger = LogManager.getLogger(BenchRunner.class);
 
+    @Parameters(commandDescription = "Hadoop benchmarking tool")
+    public static class BenchCmdOptions {
+
+        @Parameter(names = {"-list", "-l"}, description = "list all results")
+        public boolean list = false;
+
+        @Parameter(names = {"-benchmarks", "-b"}, description = "benchmarking mode", arity = 1)
+        public boolean bench = true;
+    }
+
     public static void main(String[] args) {
+
         BenchContext ctx = null;
         try {
             ctx = BenchContext.instance();
@@ -28,6 +43,24 @@ public class BenchRunner {
             logger.error(e);
             return;
         }
+
+        BenchCmdOptions cmdOptions = new BenchCmdOptions();
+        JCommander jCommander = new JCommander(cmdOptions);
+        jCommander.setProgramName(BenchRunner.class.getSimpleName());
+
+        try {
+            jCommander.parse(args);
+        } catch (ParameterException e) {
+            System.err.println(e.getLocalizedMessage());
+            jCommander.usage();
+            return;
+        }
+
+        if (cmdOptions.list) {
+            ctx.getStoreConnector().listBenchResults();
+            return;
+        }
+
         List<ExecutionInfo> resultsList = new ArrayList<>();
         ExecutorService pool = Executors.newFixedThreadPool(1);
 

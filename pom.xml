@@ -23,6 +23,7 @@
     <properties>
         <derby.version>10.13.1.1</derby.version>
         <hadoop.version>2.6.0-cdh5.4.9</hadoop.version>
+	<jcommander.version>1.48</jcommander.version>
     </properties>
 
     <dependencies>
@@ -47,6 +48,11 @@
                 <artifactId>derbyclient</artifactId>
                 <version>${derby.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.beust</groupId>
+                <artifactId>jcommander</artifactId>
+                <version>${jcommander.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
@@ -61,4 +67,44 @@
             </dependency>
 
         </dependencies>
+
+    <profiles>
+        <profile>
+            <id>uber-jar</id>
+
+            <build>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>ru.yandex.hadoop.benchmark.BenchRunner</mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <finalName>hadoop-benchmark</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>build-uber-jar</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

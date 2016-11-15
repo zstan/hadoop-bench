@@ -13,6 +13,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created by zstan on 11.11.16.
@@ -109,6 +114,26 @@ public class StoreConnector implements AutoCloseable {
             logger.error("Failed to get store connection", e);
         }
         return false;
+    }
+
+    public void listBenchResults() {
+        Preconditions.checkNotNull(connection);
+        try {
+            Statement st = connection.createStatement();
+            st.execute("SELECT * FROM " + BENCH_TABLE_NAME);
+            ResultSet rs = st.getResultSet();
+            while (rs.next()) {
+                //logger.info(rs.getString(2) + " " + rs.getLong(6));
+                //DateTimeFormatter.BASIC_ISO_DATE ISO_LOCAL_DATE_TIME
+                //LocalDateTime today = LocalDateTime.now();
+                LocalDateTime date =
+                        Instant.ofEpochMilli(rs.getLong(3)).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                logger.info(rs.getString(2) + " " + date);
+            }
+            st.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
