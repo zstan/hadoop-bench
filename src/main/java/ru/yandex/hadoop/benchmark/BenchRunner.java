@@ -32,6 +32,9 @@ public class BenchRunner {
 
         @Parameter(names = {"-benchmarks", "-b"}, description = "benchmarking mode", arity = 1)
         public boolean bench = true;
+
+        @Parameter(names = {"-clear", "-c"}, description = "clear benchmark results", arity = 1)
+        public boolean clearResults = false;
     }
 
     public static void main(String[] args) {
@@ -53,6 +56,11 @@ public class BenchRunner {
         } catch (ParameterException e) {
             System.err.println(e.getLocalizedMessage());
             jCommander.usage();
+            return;
+        }
+
+        if (cmdOptions.clearResults) {
+            ctx.getStoreConnector().clearBenchResults();
             return;
         }
 

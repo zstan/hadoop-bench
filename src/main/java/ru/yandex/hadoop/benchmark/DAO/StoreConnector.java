@@ -116,19 +116,30 @@ public class StoreConnector implements AutoCloseable {
         return false;
     }
 
+    public void clearBenchResults() {
+        Preconditions.checkNotNull(connection);
+        try {
+            Statement st = connection.createStatement();
+            st.execute("DROP TABLE RESULTS");
+            st.close();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        logger.info("clear databese: Ok");
+    }
+
     public void listBenchResults() {
         Preconditions.checkNotNull(connection);
         try {
             Statement st = connection.createStatement();
             st.execute("SELECT * FROM " + BENCH_TABLE_NAME);
             ResultSet rs = st.getResultSet();
+            System.out.println("---------------------------- hadoop benchmarking -------------------------------");
+            System.out.println(String.format("%-30s%-25s%-15s%-5s", "test_name", "run_date", "execution_time", "return_code"));
             while (rs.next()) {
-                //logger.info(rs.getString(2) + " " + rs.getLong(6));
-                //DateTimeFormatter.BASIC_ISO_DATE ISO_LOCAL_DATE_TIME
-                //LocalDateTime today = LocalDateTime.now();
                 LocalDateTime date =
                         Instant.ofEpochMilli(rs.getLong(3)).atZone(ZoneId.systemDefault()).toLocalDateTime();
-                logger.info(rs.getString(2) + " " + date);
+                System.out.println(String.format("%-30.29s%-25s%-15s%-5d", rs.getString(2), date, rs.getLong(6) + " ms", rs.getLong(5)));
             }
             st.close();
         } catch (SQLException e) {
