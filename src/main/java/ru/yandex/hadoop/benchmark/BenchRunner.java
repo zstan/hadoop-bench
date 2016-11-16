@@ -33,19 +33,17 @@ public class BenchRunner {
         @Parameter(names = {"--list", "-l"}, description = "list all results")
         public boolean list = false;
 
-        @Parameter(names = {"--benchmarks", "-b"}, description = "benchmarking mode", arity = 1)
+        @Parameter(names = {"--benchmarks", "-b"}, description = "benchmarking mode")
         public boolean bench = false;
 
-        @Parameter(names = {"--clear", "-c"}, description = "clear benchmark results", arity = 1)
+        @Parameter(names = {"--clear", "-c"}, description = "clear benchmark results")
         public boolean clearResults = false;
 
         @Parameter(names = {"--help"}, description = "help info", help = true)
         public boolean helpInfo = false;
     }
 
-    public static void main(String[] args) {
-
-        BenchCmdOptions cmdOptions = new BenchCmdOptions();
+    static boolean parseCmdArgs(String[] args, BenchCmdOptions cmdOptions) {
         JCommander jCommander = new JCommander(cmdOptions);
         jCommander.setProgramName(BenchRunner.class.getSimpleName());
 
@@ -53,13 +51,21 @@ public class BenchRunner {
             jCommander.parse(args);
             if (cmdOptions.helpInfo || args.length == 0) {
                 jCommander.usage();
-                return;
+                return false;
             }
         } catch (ParameterException e) {
             System.err.println(e.getLocalizedMessage());
             jCommander.usage();
-            return;
+            return false;
         }
+        return true;
+    }
+
+    public static void main(String[] args) {
+
+        BenchCmdOptions cmdOptions = new BenchCmdOptions();
+        if (!parseCmdArgs(args, cmdOptions))
+            return;
 
         Injector injector = Guice.createInjector(new BenchModule());
         BenchContext ctx = injector.getInstance(BenchContext.class);

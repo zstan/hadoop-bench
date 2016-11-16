@@ -11,7 +11,14 @@
         <name>hadoop-examples pi 20 5000000000</name>
     </commands>
     <commands>
+        <cmd>hadoop jar /usr/lib/hadoop-0.20-mapreduce/hadoop-examples.jar bbp 10 40000 10 /tmp/bbp</cmd>
+	<preconditions>hadoop fs -rm -r /tmp/bbp</preconditions>
+        <enable>false</enable>
+        <name>hadoop-examples bbp 10 40000 10</name>
+    </commands>
+    <commands>
         <cmd>hadoop jar /usr/lib/hadoop-0.20-mapreduce/hadoop-examples.jar teragen 100000000 /tmp/teraInput</cmd>
+	<preconditions>hadoop fs -rm -r /tmp/teraInput</preconditions>
         <enable>false</enable>
         <name>hadoop_examples teragen 100000000</name>
     </commands>

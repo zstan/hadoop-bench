@@ -16,11 +16,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 <hadoopNativeBenchConfiguration>
     <commands>
         <cmd>hadoop1</cmd>
+        <preconditions>ls</preconditions>
         <enable>true</enable>
         <name>h1</name>
     </commands>
     <commands>
         <cmd>hadoop2</cmd>
+        <preconditions>hadoop fs -rm -r /tmp/teraInput</preconditions>
         <enable>false</enable>
         <name>h2</name>
     </commands>

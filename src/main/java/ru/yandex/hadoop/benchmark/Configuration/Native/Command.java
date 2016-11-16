@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 public class Command {
 
     String cmd;
+    String preconditions;
     String name;
     Boolean enable;
 
@@ -36,6 +37,15 @@ public class Command {
     @XmlElement
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPreconditions() {
+        return preconditions;
+    }
+
+    @XmlElement
+    public void setPreconditions(String preconditions) {
+        this.preconditions = preconditions;
     }
 
     @Override

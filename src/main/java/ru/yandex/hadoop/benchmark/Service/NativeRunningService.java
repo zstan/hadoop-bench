@@ -1,5 +1,6 @@
 package ru.yandex.hadoop.benchmark.Service;
 
+import com.google.common.base.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.yandex.hadoop.benchmark.Configuration.Native.Command;
@@ -27,6 +28,15 @@ public class NativeRunningService implements RunningService {
         int retCode = -1;
         if (!command.getEnable())
             return ExecutionInfo.EMPTY;
+
+        if (!Strings.isNullOrEmpty(command.getPreconditions())) {
+            logger.info("run preconditions: " + command.getPreconditions());
+            Process pr = Runtime.getRuntime().exec(command.getPreconditions());
+            int ret = pr.waitFor();
+            if (ret != 0) {
+                logger.error("preconditions failed with return code: " + ret);
+            }
+        }
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command.getCmd());
         List<String> output = new ArrayList<>();
         try {
