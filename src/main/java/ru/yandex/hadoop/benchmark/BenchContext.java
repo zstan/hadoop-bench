@@ -2,6 +2,7 @@ package ru.yandex.hadoop.benchmark;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +34,7 @@ public class BenchContext implements AutoCloseable {
     }
 
     @Inject
-    private void injectCmdBenchConfiguration(IBenchConfiguration conf) {
+    private void injectCmdBenchConfiguration(@Named("cmdConf") IBenchConfiguration conf) {
         cmdRunConfiguration = conf;
     }
 

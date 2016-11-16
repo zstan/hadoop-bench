@@ -4,6 +4,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
+import com.google.common.base.Strings;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.apache.logging.log4j.LogManager;
@@ -29,20 +30,20 @@ public class BenchRunner {
     @Parameters(commandDescription = "Hadoop benchmarking tool")
     public static class BenchCmdOptions {
 
-        @Parameter(names = {"-list", "-l"}, description = "list all results")
+        @Parameter(names = {"--list", "-l"}, description = "list all results")
         public boolean list = false;
 
-        @Parameter(names = {"-benchmarks", "-b"}, description = "benchmarking mode", arity = 1)
-        public boolean bench = true;
+        @Parameter(names = {"--benchmarks", "-b"}, description = "benchmarking mode", arity = 1)
+        public boolean bench = false;
 
-        @Parameter(names = {"-clear", "-c"}, description = "clear benchmark results", arity = 1)
+        @Parameter(names = {"--clear", "-c"}, description = "clear benchmark results", arity = 1)
         public boolean clearResults = false;
+
+        @Parameter(names = {"--help"}, description = "help info", help = true)
+        public boolean helpInfo = false;
     }
 
     public static void main(String[] args) {
-
-        Injector injector = Guice.createInjector(new BenchModule());
-        BenchContext ctx = injector.getInstance(BenchContext.class);
 
         BenchCmdOptions cmdOptions = new BenchCmdOptions();
         JCommander jCommander = new JCommander(cmdOptions);
@@ -50,11 +51,18 @@ public class BenchRunner {
 
         try {
             jCommander.parse(args);
+            if (cmdOptions.helpInfo || args.length == 0) {
+                jCommander.usage();
+                return;
+            }
         } catch (ParameterException e) {
             System.err.println(e.getLocalizedMessage());
             jCommander.usage();
             return;
         }
+
+        Injector injector = Guice.createInjector(new BenchModule());
+        BenchContext ctx = injector.getInstance(BenchContext.class);
 
         if (cmdOptions.clearResults) {
             ctx.getStoreConnector().clearBenchResults();

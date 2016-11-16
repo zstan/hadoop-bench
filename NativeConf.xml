@@ -6,13 +6,13 @@
         <name>echo_test</name>
     </commands>
     <commands>
-        <cmd>hadoop</cmd>
-        <enable>true</enable>
-        <name>hadoop_cmd</name>
+        <cmd>hadoop jar /usr/lib/hadoop-0.20-mapreduce/hadoop-examples.jar pi 20 5000000000</cmd>
+        <enable>false</enable>
+        <name>hadoop-examples pi 20 5000000000</name>
     </commands>
     <commands>
         <cmd>hadoop jar /usr/lib/hadoop-0.20-mapreduce/hadoop-examples.jar teragen 100000000 /tmp/teraInput</cmd>
-        <enable>true</enable>
+        <enable>false</enable>
         <name>hadoop_examples teragen 100000000</name>
     </commands>
 </hadoopNativeBenchConfiguration>
