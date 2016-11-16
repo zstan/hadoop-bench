@@ -12,16 +12,16 @@ import java.util.Map;
  * Created by zstan on 11.11.16.
  */
 
-public class BenchConfiguration extends Configuration {
+public class CommonBenchConfiguration extends Configuration {
 
-    private static final Logger logger = LogManager.getLogger(BenchConfiguration.class);
-    private static final Map<String, ConfVars> vars = new HashMap<String, ConfVars>();
+    private static final Logger logger = LogManager.getLogger(CommonBenchConfiguration.class);
+    private static final Map<String, ConfVars> vars = new HashMap<>();
     private static URL configDefaultURL = null;
 
     static {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if (classLoader == null) {
-            classLoader = BenchConfiguration.class.getClassLoader();
+            classLoader = CommonBenchConfiguration.class.getClassLoader();
         }
 
         configDefaultURL = classLoader.getResource("hadoop-bench-config.xml");
@@ -57,7 +57,7 @@ public class BenchConfiguration extends Configuration {
         return conf.get(var.varname, var.defaultExpr);
     }
 
-    public BenchConfiguration() {
+    public CommonBenchConfiguration() {
         if (configDefaultURL != null)
             addResource(configDefaultURL);
     }

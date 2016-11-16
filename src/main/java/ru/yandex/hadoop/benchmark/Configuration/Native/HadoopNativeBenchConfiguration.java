@@ -4,7 +4,7 @@ package ru.yandex.hadoop.benchmark.Configuration.Native;
  * Created by zstan on 31.10.16.
  */
 
-import ru.yandex.hadoop.benchmark.Configuration.Configuration;
+import ru.yandex.hadoop.benchmark.Configuration.IBenchConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 </hadoopNativeBenchConfiguration>
  */
 @XmlRootElement
-public class HadoopNativeBenchConfiguration implements Configuration {
+public class HadoopNativeBenchConfiguration implements IBenchConfiguration {
 
     List <Command> commands = new ArrayList<>();
 

@@ -1,35 +1,28 @@
 package ru.yandex.hadoop.benchmark;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import ru.yandex.hadoop.benchmark.Configuration.Common.BenchConfiguration;
-import ru.yandex.hadoop.benchmark.Configuration.Native.HadoopNativeBenchConfiguration;
+import ru.yandex.hadoop.benchmark.Configuration.Common.CommonBenchConfiguration;
+import ru.yandex.hadoop.benchmark.Configuration.IBenchConfiguration;
 import ru.yandex.hadoop.benchmark.DAO.StoreConnector;
-
-import static ru.yandex.hadoop.benchmark.Utils.Utils.importConfiguration;
 
 /**
  * Created by zstan on 31.10.16.
  */
+@Singleton
 public class BenchContext implements AutoCloseable {
     private static final Logger logger = LogManager.getLogger(BenchContext.class);
     private static BenchContext INSTANCE;
 
-    private static final String GENERAL_CONF = "NativeConf.xml";
-
-    private HadoopNativeBenchConfiguration nativeConfiguration;
-    private BenchConfiguration benchConfiguration;
+    private IBenchConfiguration cmdRunConfiguration;
+    private CommonBenchConfiguration benchConfiguration;
     private StoreConnector storeConnector;
 
-    public static BenchContext instance() throws Exception {
-        if (INSTANCE == null) {
-            INSTANCE = new BenchContext();
-        }
-        return INSTANCE;
-    }
-
-    private BenchContext() throws Exception {
-        benchConfiguration = new BenchConfiguration();
+    public BenchContext() throws Exception {
+        benchConfiguration = new CommonBenchConfiguration();
         if (StoreConnector.testConnectionToStore(benchConfiguration)) {
             storeConnector = new StoreConnector(benchConfiguration);
             if (!storeConnector.initStoreConnection(benchConfiguration)) {
@@ -37,23 +30,18 @@ public class BenchContext implements AutoCloseable {
                 throw new Exception("storeConnector init error");
             }
         }
-        loadConfiguration();
     }
 
-    private void loadConfiguration() {
-        loadNativeBenchmarksConf();
+    @Inject
+    private void injectCmdBenchConfiguration(IBenchConfiguration conf) {
+        cmdRunConfiguration = conf;
     }
 
-    private void loadNativeBenchmarksConf() {
-        nativeConfiguration =
-            importConfiguration(GENERAL_CONF, HadoopNativeBenchConfiguration.class);
+    public IBenchConfiguration getCmdRunConfiguration() {
+        return cmdRunConfiguration;
     }
 
-    public HadoopNativeBenchConfiguration getNativeConfiguration() {
-        return nativeConfiguration;
-    }
-
-    public BenchConfiguration getBenchConfiguration() {
+    public Configuration getBenchConfiguration() {
         return benchConfiguration;
     }
 

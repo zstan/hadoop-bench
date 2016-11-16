@@ -4,9 +4,11 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.yandex.hadoop.benchmark.Configuration.Native.HadoopNativeBenchConfiguration;
+import ru.yandex.hadoop.benchmark.Configuration.IBenchConfiguration;
 import ru.yandex.hadoop.benchmark.Service.ExecutionInfo;
 import ru.yandex.hadoop.benchmark.Service.NativeRunningService;
 
@@ -39,13 +41,8 @@ public class BenchRunner {
 
     public static void main(String[] args) {
 
-        BenchContext ctx = null;
-        try {
-            ctx = BenchContext.instance();
-        } catch (Exception e) {
-            logger.error(e);
-            return;
-        }
+        Injector injector = Guice.createInjector(new BenchModule());
+        BenchContext ctx = injector.getInstance(BenchContext.class);
 
         BenchCmdOptions cmdOptions = new BenchCmdOptions();
         JCommander jCommander = new JCommander(cmdOptions);
@@ -72,7 +69,7 @@ public class BenchRunner {
         List<ExecutionInfo> resultsList = new ArrayList<>();
         ExecutorService pool = Executors.newFixedThreadPool(1);
 
-        HadoopNativeBenchConfiguration cfg = ctx.getNativeConfiguration();
+        IBenchConfiguration cfg = ctx.getCmdRunConfiguration();
 
         cfg.getCommands().forEach(s -> {
             if (s.getEnable()) {

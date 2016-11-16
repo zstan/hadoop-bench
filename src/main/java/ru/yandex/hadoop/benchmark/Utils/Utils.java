@@ -4,8 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-import ru.yandex.hadoop.benchmark.Configuration.Configuration;
-import ru.yandex.hadoop.benchmark.Configuration.Native.HadoopNativeBenchConfiguration;
+import ru.yandex.hadoop.benchmark.Configuration.IBenchConfiguration;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -58,7 +57,7 @@ public class Utils {
         return document;
     }
 
-    public static <T extends Configuration> T importConfiguration(final String resFileName, Class _class) {
+    public static <T extends IBenchConfiguration> T importConfiguration(final String resFileName, Class _class) {
         try {
             File file = new File(resFileName);
             JAXBContext jaxbContext = JAXBContext.newInstance(_class);

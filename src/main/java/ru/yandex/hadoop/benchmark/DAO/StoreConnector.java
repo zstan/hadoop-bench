@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.yandex.hadoop.benchmark.Configuration.Common.BenchConfiguration;
+import ru.yandex.hadoop.benchmark.Configuration.Common.CommonBenchConfiguration;
 import ru.yandex.hadoop.benchmark.Service.ExecutionInfo;
 
 import java.sql.Connection;
@@ -14,10 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Created by zstan on 11.11.16.
@@ -35,17 +33,17 @@ public class StoreConnector implements AutoCloseable {
             "\"DATA\" BIGINT, \"INFO\" LONG VARCHAR)";
     private Connection connection;
 
-    public StoreConnector(BenchConfiguration conf) {
+    public StoreConnector(CommonBenchConfiguration conf) {
         this.configuration = conf;
     }
 
     private Connection getStoreConnection(String userName, String password, boolean printInfo,
-                                                      BenchConfiguration conf) throws ClassNotFoundException, SQLException {
+                                                      CommonBenchConfiguration conf) throws ClassNotFoundException, SQLException {
 
         String connectionURL = conf.getVar(
-                BenchConfiguration.ConfVars.STORE_JDBC_CONNECT_STRING);
+                CommonBenchConfiguration.ConfVars.STORE_JDBC_CONNECT_STRING);
         String driver = conf.getVar(
-                BenchConfiguration.ConfVars.STORE_CONNECTION_DRIVER);
+                CommonBenchConfiguration.ConfVars.STORE_CONNECTION_DRIVER);
         if (printInfo) {
             logger.info("Store connection URL:\t " + connectionURL);
             logger.info("Store Connection Driver :\t " + driver);
@@ -76,7 +74,7 @@ public class StoreConnector implements AutoCloseable {
         }
     }
 
-    public static boolean testConnectionToStore(BenchConfiguration conf) {
+    public static boolean testConnectionToStore(CommonBenchConfiguration conf) {
         Connection conn = null;
         try {
             try (StoreConnector storeConn = new StoreConnector(conf)) {
@@ -90,7 +88,7 @@ public class StoreConnector implements AutoCloseable {
         return false;
     }
 
-    public boolean initStoreConnection(BenchConfiguration conf) {
+    public boolean initStoreConnection(CommonBenchConfiguration conf) {
         try {
             connection = getStoreConnection("", "", true, conf);
 
