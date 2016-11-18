@@ -4,6 +4,11 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.apache.logging.log4j.LogManager;
@@ -69,9 +74,10 @@ public class BenchRunner {
     }
 
     private static void initRunners(Map<Class<? extends IRunningService>, IBenchConfiguration> runners,
-                                    IBenchConfiguration cfg) {
-        List<ExecutionInfo> resultsList = new ArrayList<>();
+                                    final BenchContext ctx) {
+
         ExecutorService pool = Executors.newFixedThreadPool(1);
+        ListeningExecutorService service = MoreExecutors.listeningDecorator(pool);
 
         runners.forEach( (k, v) -> {
 
@@ -86,26 +92,27 @@ public class BenchRunner {
                         logger.error(e);
                     }
                     long timeStart = System.currentTimeMillis();
-                    Future<ExecutionInfo> future = pool.submit(runner);
-                    try {
-                        ExecutionInfo info = future.get();
-                        info.setExecutionTime(System.currentTimeMillis() - timeStart);
-                        info.setCreationTime(timeStart);
-                        resultsList.add(info);
-                    } catch (InterruptedException | ExecutionException e) {
-                        logger.error(e);
-                    }
-                }
-            });
+                    ListenableFuture<ExecutionInfo> future = service.submit(runner);
 
-            //BenchContext finalCtx = ctx;
-            resultsList.forEach(s -> {
-                //finalCtx.getStoreConnector().storeBenchInfo(s);
-                System.out.println(s.getCommand());
-                System.out.println("return code: " + s.getReturnCode());
-                System.out.println("execution time: " + s.getExecutionTime());
-                //System.out.println("output: \n" + s.getExecOutput());
-                System.out.println("\n\n");
+                    Futures.addCallback(future, new FutureCallback<ExecutionInfo>() {
+
+                        public void onSuccess(ExecutionInfo info) {
+                            info.setExecutionTime(System.currentTimeMillis() - timeStart);
+                            info.setCreationTime(timeStart);
+
+                            ctx.getStoreConnector().storeBenchInfo(info);
+                            System.out.println(info.getCommand());
+                            System.out.println("return code: " + info.getReturnCode());
+                            System.out.println("execution time: " + info.getExecutionTime());
+                            //System.out.println("output: \n" + s.getExecOutput());
+                            System.out.println("\n\n");
+                        }
+
+                        public void onFailure(Throwable thrown) {
+                            logger.error(thrown);
+                        }
+                    });
+                }
             });
         });
         pool.shutdown();
@@ -119,8 +126,6 @@ public class BenchRunner {
 
         Injector injector = Guice.createInjector(new BenchModule());
         BenchContext ctx = injector.getInstance(BenchContext.class);
-
-        IBenchConfiguration cfg = ctx.getCmdRunConfiguration();
 
         Map<Class<? extends IRunningService>, IBenchConfiguration> runnerConfigurationMap = new HashMap<>();
         runnerConfigurationMap.put(NativeRunningService.class, ctx.getCmdRunConfiguration());
@@ -136,7 +141,8 @@ public class BenchRunner {
             return;
         }
 
-        initRunners(runnerConfigurationMap, cfg);
-
+        if (cmdOptions.bench) {
+            initRunners(runnerConfigurationMap, ctx);
+        }
     }
 }
