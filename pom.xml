@@ -23,8 +23,9 @@
     <properties>
         <derby.version>10.13.1.1</derby.version>
         <hadoop.version>2.6.0-cdh5.4.9</hadoop.version>
-	<jcommander.version>1.48</jcommander.version>
-	<guice.version>4.1.0</guice.version>
+        <hadoop.hive.version>1.1.0-cdh5.4.9</hadoop.hive.version>
+	    <jcommander.version>1.48</jcommander.version>
+	    <guice.version>4.1.0</guice.version>
     </properties>
 
     <dependencies>
@@ -54,13 +55,11 @@
                 <artifactId>jcommander</artifactId>
                 <version>${jcommander.version}</version>
             </dependency>
-
-	    <dependency>
-		<groupId>com.google.inject</groupId>
-		<artifactId>guice</artifactId>
-		<version>${guice.version}</version>
-	    </dependency>
-
+            <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.apache.hadoop</groupId>
@@ -70,6 +69,26 @@
                     <exclusion>
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-jdbc</artifactId>
+                <version>${hadoop.hive.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mockito</groupId>
+                        <artifactId>mockito-all</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

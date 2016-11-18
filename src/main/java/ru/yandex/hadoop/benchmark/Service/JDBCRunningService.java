@@ -1,5 +1,6 @@
 package ru.yandex.hadoop.benchmark.Service;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.name.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +10,7 @@ import ru.yandex.hadoop.benchmark.Configuration.IBenchConfiguration;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collections;
 
 /**
@@ -27,7 +29,7 @@ public class JDBCRunningService implements IRunningService {
         configuration = cfg;
         try {
             Class.forName(cfg.getConnectionDriverName());
-            DriverManager.getConnection(cfg.getConnectionURL(), "", "");
+            connection = DriverManager.getConnection(cfg.getConnectionURL(), "robot-hadoop-int", "%7pHwHfA");
         } catch (ClassNotFoundException e) {
             logger.error(e);
             throw new RuntimeException("Unable to load hive jdbc driver.", e);
@@ -39,10 +41,18 @@ public class JDBCRunningService implements IRunningService {
 
     @Override
     public ExecutionInfo call() throws Exception {
+        Preconditions.checkNotNull(connection);
         int retCode = -1;
         if (!command.getEnable())
             return ExecutionInfo.EMPTY;
         logger.info("sql to run: " + command.getCmd());
+        try {
+            Statement st = connection.createStatement();
+            st.execute(command.getCmd());
+            st.close();
+        } catch (SQLException e) {
+            logger.error(e);
+        }
         if (connection != null)
             connection.close();
         return new ExecutionInfo(Collections.EMPTY_LIST, retCode, command);

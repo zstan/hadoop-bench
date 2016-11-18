@@ -3,9 +3,9 @@
     <connectionURL>jdbc:hive2://localhost:10000/default</connectionURL>
     <connectionDriverName>org.apache.hive.jdbc.HiveDriver</connectionDriverName>
     <action>
-        <cmd>select * from table</cmd>
+        <cmd>select dt, count(*) from frozen_for_monitoring.music_track_downloads_log group by dt</cmd>
 	<preconditions></preconditions>
-        <enable>true</enable>
+        <enable>false</enable>
         <name>simple select</name>
     </action>
 </jdbcBenchConfiguration>
