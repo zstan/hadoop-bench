@@ -1,4 +1,4 @@
-package ru.yandex.hadoop.benchmark.Configuration.Native;
+package ru.yandex.hadoop.benchmark.Configuration;
 
 import javax.xml.bind.annotation.XmlElement;
 
@@ -31,7 +31,7 @@ public class Command {
     }
 
     public String getName() {
-        return name;
+        return name == null ? cmd : name;
     }
 
     @XmlElement

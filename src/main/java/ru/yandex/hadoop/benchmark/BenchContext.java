@@ -19,6 +19,7 @@ public class BenchContext implements AutoCloseable {
     private static BenchContext INSTANCE;
 
     private IBenchConfiguration cmdRunConfiguration;
+    private IBenchConfiguration jdbcRunConfiguration;
     private CommonBenchConfiguration benchConfiguration;
     private StoreConnector storeConnector;
 
@@ -38,6 +39,11 @@ public class BenchContext implements AutoCloseable {
         cmdRunConfiguration = conf;
     }
 
+    @Inject
+    private void injectJDBCBenchConfiguration(@Named("jdbcConf") IBenchConfiguration conf) {
+        jdbcRunConfiguration = conf;
+    }
+
     public IBenchConfiguration getCmdRunConfiguration() {
         return cmdRunConfiguration;
     }
@@ -48,6 +54,10 @@ public class BenchContext implements AutoCloseable {
 
     public StoreConnector getStoreConnector() {
         return storeConnector;
+    }
+
+    public IBenchConfiguration getJdbcRunConfiguration() {
+        return jdbcRunConfiguration;
     }
 
     @Override

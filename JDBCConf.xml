@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jdbcBenchConfiguration>
+    <connectionURL>jdbc:hive2://localhost:10000/default</connectionURL>
+    <connectionDriverName>org.apache.hive.jdbc.HiveDriver</connectionDriverName>
+    <action>
+        <cmd>select * from table</cmd>
+	<preconditions></preconditions>
+        <enable>true</enable>
+        <name>simple select</name>
+    </action>
+</jdbcBenchConfiguration>

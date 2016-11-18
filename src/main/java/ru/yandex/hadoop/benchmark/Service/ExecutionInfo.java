@@ -1,6 +1,6 @@
 package ru.yandex.hadoop.benchmark.Service;
 
-import ru.yandex.hadoop.benchmark.Configuration.Native.Command;
+import ru.yandex.hadoop.benchmark.Configuration.Command;
 
 import java.util.List;
 

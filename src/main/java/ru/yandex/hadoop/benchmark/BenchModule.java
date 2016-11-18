@@ -5,6 +5,7 @@ import com.google.inject.name.Names;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.yandex.hadoop.benchmark.Configuration.IBenchConfiguration;
+import ru.yandex.hadoop.benchmark.Configuration.JDBC.JDBCBenchConfiguration;
 import ru.yandex.hadoop.benchmark.Configuration.Native.HadoopNativeBenchConfiguration;
 
 import static ru.yandex.hadoop.benchmark.Utils.Utils.importConfiguration;
@@ -16,12 +17,17 @@ public class BenchModule extends AbstractModule {
 
     private static final Logger logger = LogManager.getLogger(BenchModule.class);
     private static final String GENERAL_CONF = "NativeConf.xml";
+    private static final String JDBC_CONF    = "JDBCConf.xml";
 
     @Override
     protected void configure() {
+
         bind(IBenchConfiguration.class)
                 .annotatedWith(Names.named("cmdConf"))
                 .toInstance(importConfiguration(GENERAL_CONF, HadoopNativeBenchConfiguration.class));
 
+        bind(IBenchConfiguration.class)
+                .annotatedWith(Names.named("jdbcConf"))
+                .toInstance(importConfiguration(JDBC_CONF, JDBCBenchConfiguration.class));
     }
 }

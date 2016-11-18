@@ -3,7 +3,7 @@ package ru.yandex.hadoop.benchmark.Service;
 import com.google.common.base.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.yandex.hadoop.benchmark.Configuration.Native.Command;
+import ru.yandex.hadoop.benchmark.Configuration.Command;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by zstan on 31.10.16.
  */
-public class NativeRunningService implements RunningService {
+public class NativeRunningService implements IRunningService {
     private static final Logger logger = LogManager.getLogger(NativeRunningService.class);
     private final Command command;
 
@@ -34,7 +34,7 @@ public class NativeRunningService implements RunningService {
             Process pr = Runtime.getRuntime().exec(command.getPreconditions());
             int ret = pr.waitFor();
             if (ret != 0) {
-                logger.error("preconditions failed with return code: " + ret);
+                logger.error("preconditions: " + command.getPreconditions() + " failed with return code: " + ret);
             }
         }
         ProcessBuilder pb = new ProcessBuilder("bash", "-c", command.getCmd());
