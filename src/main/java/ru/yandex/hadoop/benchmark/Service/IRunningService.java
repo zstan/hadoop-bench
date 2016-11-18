@@ -1,5 +1,7 @@
 package ru.yandex.hadoop.benchmark.Service;
 
+import ru.yandex.hadoop.benchmark.Configuration.IBenchConfiguration;
+
 import java.util.concurrent.Callable;
 
 /**

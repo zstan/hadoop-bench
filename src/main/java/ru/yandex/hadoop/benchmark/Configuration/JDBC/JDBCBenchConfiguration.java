@@ -24,4 +24,13 @@ public class JDBCBenchConfiguration extends HadoopNativeBenchConfiguration {
         this.connectionDriverName = connectionDriverName;
     }
 
+    @Override
+    public String getConnectionURL() {
+        return connectionURL;
+    }
+
+    @Override
+    public String getConnectionDriverName() {
+        return connectionDriverName;
+    }
 }

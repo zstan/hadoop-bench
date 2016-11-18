@@ -20,14 +20,10 @@ import ru.yandex.hadoop.benchmark.Service.IRunningService;
 import ru.yandex.hadoop.benchmark.Service.JDBCRunningService;
 import ru.yandex.hadoop.benchmark.Service.NativeRunningService;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.lang.reflect.Constructor;
 
 import static javafx.scene.input.KeyCode.T;
@@ -86,8 +82,8 @@ public class BenchRunner {
                     Constructor ctor = null;
                     IRunningService runner = null;
                     try {
-                        ctor = k.getConstructor(new Class[]{Command.class});
-                        runner = (IRunningService) ctor.newInstance(s);
+                        ctor = k.getConstructor(new Class[]{Command.class, IBenchConfiguration.class});
+                        runner = (IRunningService) ctor.newInstance(s, v);
                     } catch (Exception e) {
                         logger.error(e);
                     }
@@ -143,6 +139,7 @@ public class BenchRunner {
 
         if (cmdOptions.bench) {
             initRunners(runnerConfigurationMap, ctx);
+            return;
         }
     }
 }

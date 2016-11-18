@@ -7,4 +7,12 @@ import java.util.List;
  */
 public interface IBenchConfiguration {
     List<Command> getAction();
+
+    default String getConnectionURL() {
+        return "";
+    }
+
+    default String getConnectionDriverName() {
+        return "";
+    }
 }

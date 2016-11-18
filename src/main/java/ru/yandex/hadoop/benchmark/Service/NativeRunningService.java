@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.yandex.hadoop.benchmark.Configuration.Command;
+import ru.yandex.hadoop.benchmark.Configuration.IBenchConfiguration;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,9 +19,11 @@ import java.util.List;
 public class NativeRunningService implements IRunningService {
     private static final Logger logger = LogManager.getLogger(NativeRunningService.class);
     private final Command command;
+    private final IBenchConfiguration configuration;
 
-    public NativeRunningService(final Command cmd) {
+    public NativeRunningService(final Command cmd, final IBenchConfiguration cfg) {
         command = cmd;
+        configuration = cfg;
     }
 
     @Override
